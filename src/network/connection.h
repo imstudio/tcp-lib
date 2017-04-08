@@ -169,7 +169,7 @@ private:
   deadline_timer_ptr _timer;
   conn_close_func_type _close_func;
   char _header_buffer[TcpMessage::header_length + 1];
-  std::atomic<bool> _on_write{false};
+  bool _on_write{false};
 };
 
 DF_SHARED_PTR(Connection);
