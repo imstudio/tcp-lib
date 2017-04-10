@@ -23,7 +23,7 @@ typedef moodycamel::BlockingReaderWriterQueue<TcpMessage> BlockMessageQueue;
 
 class Connection:public enable_shared_from_this<Connection>{
 public:
-  typedef std::function<void(int64_t)> conn_close_func_type;
+  typedef std::function<void(int64_t)> ConnCloseFuncType;
 
 Connection(
     std::size_t conn_id,
@@ -50,7 +50,7 @@ Connection(
       _close_func(_id);
   }
 
-  void set_socket_close_callback(conn_close_func_type func) {
+  void set_socket_close_callback(ConnCloseFuncType func) {
     _close_func = func;
   }
 
@@ -150,7 +150,7 @@ Connection(
                 });
   }
 
-  void send(TcpMessage &msg) {
+  void send(TcpMessage& msg) {
     // notice: Run in multiple thread.
     _w_msg.push_back(std::move(msg));
     if (!_on_write) {
@@ -167,7 +167,7 @@ private:
   deque<TcpMessage> _w_msg;
   std::chrono::time_point<std::chrono::system_clock> _last_hb;
   deadline_timer_ptr _timer;
-  conn_close_func_type _close_func;
+  ConnCloseFuncType _close_func;
   char _header_buffer[TcpMessage::header_length + 1];
   bool _on_write{false};
 };

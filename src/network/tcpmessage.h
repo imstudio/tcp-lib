@@ -25,7 +25,7 @@ public:
     _msg_owner = owner;
   }
 
-  std::size_t get_owner(){
+  std::size_t get_owner() const {
     return _msg_owner;
   }
 
@@ -101,6 +101,8 @@ private:
   std::size_t _body_length{0};
   char *_data{nullptr};
 };
+
+DF_SHARED_PTR(TcpMessage);
 
 END_NAMESPACE
 #endif
