@@ -6,10 +6,10 @@
 BEGIN_NAMESPACE(fnet)
 
 NetCore::NetCore(){
-  _biz = get_biz_suit(_work_service, [this](int64_t conn_id, TcpMessagePtr msg){
+  _biz = get_biz_suit(_work_service, [this](int64_t conn_id, OutMsgBuffer& buf){
       auto it = _conns.find(conn_id);
       if (it != _conns.end()){
-        it->second->send(*msg);
+        it->second->send(buf);
       }
     });
 }
@@ -25,6 +25,7 @@ NetCore::~NetCore(){
 void NetCore::close_conn(std::size_t conn_id){
   auto it = _conns.find(conn_id);
   FLOG(info) << "close conn:" << conn_id;
+  _biz->disconnect(conn_id);
   if (it != _conns.end()) {
     FLOG(info) << "conn exist.";
     it->second->close(false);

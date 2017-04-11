@@ -17,7 +17,14 @@ public:
   }
 
   void ensure(std::size_t size) {
+    if (_data) free(_data);
     _data = new char[size];
+    _body_length = size;
+  }
+
+  void ensure_body(std::size_t size) {
+    if (_data) free(_data);
+    _data = new char[size + header_length];
     _body_length = size;
   }
 

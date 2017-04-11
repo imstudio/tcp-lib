@@ -2,7 +2,6 @@
 #define BIZSUITFACTORY_H
 
 #include "utils/common_define.h"
-#include "asio_define.h"
 #include "ibizsuit.h"
 
 BEGIN_NAMESPACE(fnet)

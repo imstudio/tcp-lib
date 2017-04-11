@@ -9,7 +9,7 @@
 #include <chrono>
 #include "utils/common_define.h"
 #include "utils/logger.h"
-#include "asio_define.h"
+#include "net_define.h"
 #include "tcpmessage.h"
 #include "readerwriterqueue.h"
 
@@ -134,7 +134,7 @@ Connection(
   void do_write(){
     auto self(shared_from_this());
     _on_write = true;
-    async_write(*_socket, buffer(_w_msg.front().data(), _w_msg.front().length()),
+    async_write(*_socket, buffer(_w_msg.front().GetString(), _w_msg.front().GetSize()),
                 [this, self](boost::system::error_code ec, std::size_t){
                   if (!ec){
                     _w_msg.pop_front();
@@ -150,8 +150,9 @@ Connection(
                 });
   }
 
-  void send(TcpMessage& msg) {
+  void send(OutMsgBuffer& msg) {
     // notice: Run in multiple thread.
+    // there servral thread trys to push_back.
     _w_msg.push_back(std::move(msg));
     if (!_on_write) {
       do_write();
@@ -164,7 +165,7 @@ private:
   BlockMessageQueue &_r_msg_queue;
   sock_ptr _socket;
   TcpMessage _msg;
-  deque<TcpMessage> _w_msg;
+  deque<OutMsgBuffer> _w_msg;
   std::chrono::time_point<std::chrono::system_clock> _last_hb;
   deadline_timer_ptr _timer;
   ConnCloseFuncType _close_func;

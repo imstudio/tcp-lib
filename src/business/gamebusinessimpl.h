@@ -11,6 +11,8 @@ public:
       :fnet::IBizSuit(s, f) {}
 
   virtual bool do_process(fnet::TcpMessagePtr msg);
+
+  virtual void disconnect(std::size_t conn_id);
 };
 
 END_NAMESPACE
