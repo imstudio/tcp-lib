@@ -84,7 +84,6 @@ public:
   }
 
   TcpMessage(TcpMessage&& msg) {
-    FLOG(info) << "right assigenment in tcpmessage when construct.";
     _data = msg._data;
     _body_length = msg._body_length;
     _msg_owner = msg._msg_owner;
@@ -93,7 +92,6 @@ public:
   }
 
   TcpMessage& operator=(TcpMessage&& msg) {
-    FLOG(info) << "right assigenment in tcpmessage when transfer";
     if (this != &msg){
       _data = msg._data;
       _body_length = msg._body_length;

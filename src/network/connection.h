@@ -3,7 +3,7 @@
 
 
 #include <cstdlib>
-#include <deque>
+#include <queue>
 #include <array>
 #include <iostream>
 #include <atomic>
@@ -17,7 +17,7 @@
 
 BEGIN_NAMESPACE(fnet)
 
-#define MAX_ALIVE_TIME 15
+#define MAX_ALIVE_TIME 300
 #define MAX_WRITE_MSG_QUEUE_SIZE 128
 
 using namespace std;
@@ -119,6 +119,8 @@ Connection(
                    if (!_r_msg_queue.try_enqueue(std::move(_msg))){
                      FLOG(info) << "queue is full!!!!!";
                    }
+                   ++_msg_in;
+                   FLOG(info) << "msg index: " << _msg_in;
                    _last_hb = std::chrono::system_clock::now();
                    //process msg, or push data to queue
                    do_read_header();
@@ -135,58 +137,60 @@ Connection(
   }
 
   void do_write(){
-    if (_on_write) return;
-    _on_write = true;
-    auto self(shared_from_this());
-    OutMsgBufferPtr buf(new OutMsgBuffer);
-    if (!_write_msg_queue.try_dequeue(*buf)) {
-      _on_write = false;
+    if (_on_write or !_socket->is_open()) return;
+
+    if (_write_msg_queue.empty()){
       return;
     }
-    int buf_size = buf->GetSize();
+
+    auto self(shared_from_this());
+    int buf_size = _write_msg_queue.front().GetSize();
     if (buf_size > 9999) {
       FLOG(info)<<"msg too long.";
       return;
     }
+    _on_write = true;
     //std::array<char, TcpMessage::header_length> len_ary;
     char len_str[TcpMessage::header_length];
     sprintf(len_str, HEADER_FORMAT, buf_size);
+
     async_write(*_socket, buffer(len_str, TcpMessage::header_length),
-                [this, self, len_str, buf](
-                    const boost::system::error_code &ec, std::size_t)
+                [this, self, len_str](const boost::system::error_code &ec, std::size_t)
                 {
                   if (!ec) {
-                    do_write_body(buf);
+                    do_write_body();
                   } else {
-                    FLOG(info)<<"do write message failed:"<<ec;
+                    FLOG(info)<<"Write header failed:"<<ec;
                     close(true);
                   }
                 });
   }
 
-  void do_write_body(OutMsgBufferPtr buf) {
+  void do_write_body() {
     auto self(shared_from_this());
-    async_write(*_socket, buffer(buf->GetString(), buf->GetSize()),
-                [this, self, buf](boost::system::error_code ec, std::size_t){
+    async_write(*_socket, buffer(_write_msg_queue.front().GetString(),
+                                 _write_msg_queue.front().GetSize()),
+                [this, self](boost::system::error_code ec, std::size_t){
                   if (!ec){
+
+                    _lock.lock();
+                    _write_msg_queue.pop();
+                    _lock.unlock();
+
                     _on_write = false;
                     do_write();
                   }else{
-                    FLOG(info)<<"do write message body failed:"<<ec;
-                    // close may lead do_write fail.
+                    FLOG(info)<<"Write message body failed:"<<ec;
                     close(true);
                   }
                 });
   }
 
   void send(OutMsgBuffer& msg) {
-    // notice: Run in multiple thread.
-    // there servral thread trys to push_back.
-    if (!_write_msg_queue.try_enqueue(std::move(msg))) {
-      FLOG(info) << "too many msg in queue, discard it.";
-    }else if (!_on_write) {
-      _service.post(boost::bind(&Connection::do_write, this));
-    }
+    _lock.lock();
+    _write_msg_queue.push(std::move(msg));
+    _lock.unlock();
+    _service.post(boost::bind(&Connection::do_write, this));
   }
 
 private:
@@ -195,12 +199,15 @@ private:
   BlockMessageQueue &_r_msg_queue;
   sock_ptr _socket;
   TcpMessage _msg;
-  moodycamel::ConcurrentQueue<OutMsgBuffer> _write_msg_queue{MAX_WRITE_MSG_QUEUE_SIZE};
-  std::chrono::time_point<std::chrono::system_clock> _last_hb;
+  queue<OutMsgBuffer> _write_msg_queue;
+  chrono::time_point<chrono::system_clock> _last_hb;
   deadline_timer_ptr _timer;
   ConnCloseFuncType _close_func;
   char _header_buffer[TcpMessage::header_length + 1];
   bool _on_write{false};
+  size_t _msg_in{0};
+  size_t _msg_out{0};
+  mutex _lock;
 };
 
 DF_SHARED_PTR(Connection);

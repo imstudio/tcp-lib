@@ -32,7 +32,7 @@ ECHO:
 $(CUR_OBJS):%.o:%.cpp
 	$(CC) -c $^ -o $(OBJS_DIR)/$@
 
-top:$(CUR_OBJS) DEBUG
+top:$(CUR_OBJS) LINK
 
 
 clean:
