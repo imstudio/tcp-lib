@@ -12,6 +12,7 @@ namespace fnet{
   using namespace boost::asio;
 
   typedef rapidjson::StringBuffer OutMsgBuffer;
+  typedef std::shared_ptr<OutMsgBuffer> OutMsgBufferPtr;
 
   typedef boost::posix_time::seconds asio_secs;
   typedef ip::tcp::acceptor acceptor_type;

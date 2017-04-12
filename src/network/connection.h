@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <deque>
+#include <array>
 #include <iostream>
 #include <atomic>
 #include <chrono>
@@ -12,10 +13,12 @@
 #include "net_define.h"
 #include "tcpmessage.h"
 #include "readerwriterqueue.h"
+#include "concurrentqueue.h"
 
 BEGIN_NAMESPACE(fnet)
 
 #define MAX_ALIVE_TIME 15
+#define MAX_WRITE_MSG_QUEUE_SIZE 128
 
 using namespace std;
 
@@ -132,19 +135,45 @@ Connection(
   }
 
   void do_write(){
-    auto self(shared_from_this());
+    if (_on_write) return;
     _on_write = true;
-    async_write(*_socket, buffer(_w_msg.front().GetString(), _w_msg.front().GetSize()),
-                [this, self](boost::system::error_code ec, std::size_t){
-                  if (!ec){
-                    _w_msg.pop_front();
-                    if (!_w_msg.empty()){
-                      do_write();
-                    } else {
-                      _on_write = false;
-                    }
-                  }else{
+    auto self(shared_from_this());
+    OutMsgBufferPtr buf(new OutMsgBuffer);
+    if (!_write_msg_queue.try_dequeue(*buf)) {
+      _on_write = false;
+      return;
+    }
+    int buf_size = buf->GetSize();
+    if (buf_size > 9999) {
+      FLOG(info)<<"msg too long.";
+      return;
+    }
+    //std::array<char, TcpMessage::header_length> len_ary;
+    char len_str[TcpMessage::header_length];
+    sprintf(len_str, HEADER_FORMAT, buf_size);
+    async_write(*_socket, buffer(len_str, TcpMessage::header_length),
+                [this, self, len_str, buf](
+                    const boost::system::error_code &ec, std::size_t)
+                {
+                  if (!ec) {
+                    do_write_body(buf);
+                  } else {
                     FLOG(info)<<"do write message failed:"<<ec;
+                    close(true);
+                  }
+                });
+  }
+
+  void do_write_body(OutMsgBufferPtr buf) {
+    auto self(shared_from_this());
+    async_write(*_socket, buffer(buf->GetString(), buf->GetSize()),
+                [this, self, buf](boost::system::error_code ec, std::size_t){
+                  if (!ec){
+                    _on_write = false;
+                    do_write();
+                  }else{
+                    FLOG(info)<<"do write message body failed:"<<ec;
+                    // close may lead do_write fail.
                     close(true);
                   }
                 });
@@ -153,9 +182,10 @@ Connection(
   void send(OutMsgBuffer& msg) {
     // notice: Run in multiple thread.
     // there servral thread trys to push_back.
-    _w_msg.push_back(std::move(msg));
-    if (!_on_write) {
-      do_write();
+    if (!_write_msg_queue.try_enqueue(std::move(msg))) {
+      FLOG(info) << "too many msg in queue, discard it.";
+    }else if (!_on_write) {
+      _service.post(boost::bind(&Connection::do_write, this));
     }
   }
 
@@ -165,7 +195,7 @@ private:
   BlockMessageQueue &_r_msg_queue;
   sock_ptr _socket;
   TcpMessage _msg;
-  deque<OutMsgBuffer> _w_msg;
+  moodycamel::ConcurrentQueue<OutMsgBuffer> _write_msg_queue{MAX_WRITE_MSG_QUEUE_SIZE};
   std::chrono::time_point<std::chrono::system_clock> _last_hb;
   deadline_timer_ptr _timer;
   ConnCloseFuncType _close_func;

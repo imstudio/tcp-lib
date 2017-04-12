@@ -8,6 +8,7 @@
 #include "utils/logger.h"
 
 BEGIN_NAMESPACE(fnet)
+#define HEADER_FORMAT "%04d"
 
 class TcpMessage{
 public:
