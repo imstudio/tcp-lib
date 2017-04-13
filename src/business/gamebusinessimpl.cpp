@@ -6,9 +6,8 @@ BEGIN_NAMESPACE(fgame)
 using namespace fnet;
 
 bool GameBusinessImpl::do_process(fnet::TcpMessagePtr msg) {
-  FLOG(info)<<"Recieve msg: ["<< std::string(msg->data(), msg->body_length())
+  FLOG(info)<<"Recieve msg: ["<< std::string(msg->data(), msg->length())
             <<"] with owner:" << msg->get_owner();
-  FLOG(info)<<"Length: "<<msg->body_length();
   OutMsgBuffer buf;
   rapidjson::Writer<OutMsgBuffer> writer(buf);
   writer.StartObject();
@@ -18,7 +17,7 @@ bool GameBusinessImpl::do_process(fnet::TcpMessagePtr msg) {
   {
     writer.StartObject();
     writer.Key("msg", sizeof("msg") - 1);
-    writer.String(msg->data(), msg->body_length());
+    writer.String(msg->data(), msg->length());
     writer.EndObject();
   }
   writer.EndObject();

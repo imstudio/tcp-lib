@@ -23,12 +23,6 @@ public:
     _body_length = size;
   }
 
-  void ensure_body(std::size_t size) {
-    if (_data) free(_data);
-    _data = new char[size + header_length];
-    _body_length = size;
-  }
-
   void set_owner(std::size_t owner){
     _msg_owner = owner;
   }
@@ -52,31 +46,7 @@ public:
   }
 
   std::size_t length() const {
-    return header_length + _body_length;
-  }
-
-  const char * body() const {
-    return _data + header_length;
-  }
-
-  char * body(){
-    return _data + header_length;
-  }
-
-  std::size_t body_length() const {
     return _body_length;
-  }
-
-  void body_length(std::size_t new_length){
-    _body_length = new_length;
-    if (_body_length > max_body_length)
-      _body_length = max_body_length;
-  }
-
-  void encode_header(){
-    char header[header_length + 1] = "";
-    std::sprintf(header, "%4d", static_cast<int>(_body_length));
-    std::memcpy(_data, header, header_length);
   }
 
   ~TcpMessage(){
@@ -103,6 +73,9 @@ public:
   }
 
 private:
+  TcpMessage(const TcpMessage& other) = delete;
+  TcpMessage& operator=(const TcpMessage& other) = delete;
+
   std::size_t _msg_owner{0};
   std::size_t _body_length{0};
   char *_data{nullptr};

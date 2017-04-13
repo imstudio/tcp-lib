@@ -115,12 +115,9 @@ Connection(
                [this, self](boost::system::error_code ec, std::size_t){
                  if (!ec){
                    // debug code
-                   FLOG(debug) << "Receive a msg from socket.";
                    if (!_r_msg_queue.try_enqueue(std::move(_msg))){
                      FLOG(info) << "queue is full!!!!!";
                    }
-                   ++_msg_in;
-                   FLOG(info) << "msg index: " << _msg_in;
                    _last_hb = std::chrono::system_clock::now();
                    //process msg, or push data to queue
                    do_read_header();
@@ -205,8 +202,6 @@ private:
   ConnCloseFuncType _close_func;
   char _header_buffer[TcpMessage::header_length + 1];
   bool _on_write{false};
-  size_t _msg_in{0};
-  size_t _msg_out{0};
   mutex _lock;
 };
 
