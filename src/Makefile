@@ -43,3 +43,6 @@ run:
 
 gdb:
 	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${BOOST_LIB_DIR}:${EXTRA_LIB_DIR};gdb ${BIN_DIR}/${BIN}
+
+biz:ECHO
+	make -C business/

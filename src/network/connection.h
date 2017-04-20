@@ -141,18 +141,12 @@ Connection(
     }
 
     auto self(shared_from_this());
-    int buf_size = _write_msg_queue.front().GetSize();
-    if (buf_size > 9999) {
-      FLOG(info)<<"msg too long.";
-      return;
-    }
     _on_write = true;
     //std::array<char, TcpMessage::header_length> len_ary;
-    char len_str[TcpMessage::header_length];
-    sprintf(len_str, HEADER_FORMAT, buf_size);
-
-    async_write(*_socket, buffer(len_str, TcpMessage::header_length),
-                [this, self, len_str](const boost::system::error_code &ec, std::size_t)
+    async_write(*_socket,
+                buffer(_write_msg_queue.front().get_head(),
+                       _write_msg_queue.front().get_head_size()),
+                [this, self](const boost::system::error_code &ec, std::size_t)
                 {
                   if (!ec) {
                     do_write_body();
@@ -165,15 +159,13 @@ Connection(
 
   void do_write_body() {
     auto self(shared_from_this());
-    async_write(*_socket, buffer(_write_msg_queue.front().GetString(),
-                                 _write_msg_queue.front().GetSize()),
+    async_write(*_socket, buffer(_write_msg_queue.front().get_body(),
+                                 _write_msg_queue.front().get_body_size()),
                 [this, self](boost::system::error_code ec, std::size_t){
                   if (!ec){
-
                     _lock.lock();
                     _write_msg_queue.pop();
                     _lock.unlock();
-
                     _on_write = false;
                     do_write();
                   }else{

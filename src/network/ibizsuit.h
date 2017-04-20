@@ -30,7 +30,10 @@ public:
 
   virtual void disconnect(std::size_t conn_id) = 0;
 
-private:
+  // this function will evoked every seconds.
+  virtual void tick() = 0;
+
+protected:
   io_service& _worker_service;
   SendMsgFuncType _send_func;
 };

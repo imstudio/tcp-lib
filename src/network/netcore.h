@@ -18,13 +18,11 @@ public:
   NetCore();
   ~NetCore();
 
-  void add_conn(ConnectionPtr conn);
-
   void close_conn(std::size_t conn_id);
-
   void start(int port);
-
-  void stop() {_stop = true;}
+  void stop();
+  void do_time_event();
+  void start_timer();
 
 private:
   void start_work_loop();
@@ -35,6 +33,9 @@ private:
   bool _stop{false};
   IBizSuitPtr _biz;
   io_service _work_service;
+  io_service _timer_service;
+  std::shared_ptr<std::thread> _timer_thread;
+  deadline_timer_ptr _core_timer;
   shared_ptr<io_service::work> _work_ptr;
   std::vector<std::shared_ptr<std::thread> > _work_threads;
 };

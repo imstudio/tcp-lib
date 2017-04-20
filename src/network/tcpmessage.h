@@ -37,11 +37,11 @@ public:
     _body_length = 0;
   }
 
-  const char * data() const {
+  const char* data() const {
     return _data;
   }
 
-  char *data(){
+  char* data(){
     return _data;
   }
 

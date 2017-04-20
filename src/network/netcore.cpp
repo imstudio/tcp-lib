@@ -42,6 +42,13 @@ void NetCore::start(int port){
           std::bind(&NetCore::close_conn, this, std::placeholders::_1));
     });
   _server->start();
+
+  _core_timer.reset(new deadline_timer(_timer_service));
+  start_timer();
+  _timer_thread.reset(new std::thread([this](){
+        _timer_service.run();
+      }));
+
   while(true) {
     TcpMessagePtr msg(new TcpMessage);
     auto success = _queue.wait_dequeue_timed(*msg, std::chrono::milliseconds(5000));
@@ -52,6 +59,31 @@ void NetCore::start(int port){
     }
   }
   _server->stop();
+}
+
+void NetCore::stop(){
+  _stop = true;
+}
+
+void NetCore::do_time_event() {
+  FLOG(info) << "do work every seconds";
+}
+
+void NetCore::start_timer() {
+  boost::system::error_code ec_;
+  _core_timer->expires_from_now(asio_secs(1), ec_);
+  if (ec_) {
+    FLOG(info) << "expires from now failed:" << ec_;
+    return;
+  }
+  _core_timer->async_wait([this](const boost::system::error_code& ec){
+      if (!ec) {
+        do_time_event();
+      } else {
+        FLOG(info) << "timer error:" << ec;
+      }
+      start_timer();
+    });
 }
 
 void NetCore::start_work_loop(){
