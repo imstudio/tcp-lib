@@ -1,0 +1,14 @@
+syntax="proto2";
+package fgame;
+
+message CreateRoom{
+required int32 userId = 1;
+required int32 roomNumber = 2;
+required int64 requestId = 3;
+}
+
+message SimpleResult{
+optional bool success = 1;
+optional int32 code = 2 [default = 0];
+optional string msg = 3;
+}

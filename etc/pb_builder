@@ -1,0 +1,25 @@
+#!/bin/sh
+
+BASE_PATH=$(cd `dirname $0`; pwd)
+PROTO_LIB_PATH="/home/licheng/workspace/WeMeet/protobuf/protobuf-3.1.0/src/.libs"
+TAG="`date +%Y-%m-%d`"
+PB_CODE_DIR=${BASE_PATH}/../src/pb
+PB_SRC_DIR=${BASE_PATH}/pb_define
+echo $PB_SRC_DIR
+
+cd $PB_SRC_DIR
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PROTO_LIB_PATH}
+
+sync_proto(){
+  # cp ${PROTO_DIR}/*.proto ${BASE_PATH}
+  proto_list=`ls *.proto`
+  for i in ${proto_list}
+  do
+    name=`echo ${i}|awk -F. '{print $1}'`
+    echo $name
+    rm -rf ./${name}
+    protoc --cpp_out=${PB_CODE_DIR} $i
+  done
+}
+
+sync_proto
