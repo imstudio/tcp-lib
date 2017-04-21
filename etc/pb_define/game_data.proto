@@ -2,13 +2,19 @@ syntax="proto2";
 package fgame;
 
 message CreateRoom{
-required int32 userId = 1;
-required int32 roomNumber = 2;
-required int64 requestId = 3;
+  required int32 userId = 1;
+  required int32 roomNumber = 2;
+  required int64 requestId = 3;
 }
 
 message SimpleResult{
-optional bool success = 1;
-optional int32 code = 2 [default = 0];
-optional string msg = 3;
+  optional bool success = 1;
+  optional int32 code = 2 [default = 0];
+  optional string msg = 3;
+}
+
+message EnterRoomData{
+required int32 reqId = 1;
+required int32 roomId = 2;
+required int32 userId = 3;
 }

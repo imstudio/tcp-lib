@@ -20,8 +20,12 @@ bool IRoom::disconnect_event(int64_t conn_id) {
   return true;
 }
 
-bool IRoom:tick(){
+bool IRoom::tick(){
 
+}
+
+bool IRoom::user_in(PlayerInfo&& uinfo) {
+  return true;
 }
 
 END_NAMESPACE

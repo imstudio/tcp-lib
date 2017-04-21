@@ -4,6 +4,7 @@
 #include "utils/common_define.h"
 #include "network/net_define.h"
 #include "bizdata.h"
+#include "bizdefine.h"
 #include "gameslot.h"
 #include <set>
 #include <map>
@@ -30,8 +31,9 @@ public:
 
   virtual bool tick();
 
+  bool user_in(PlayerInfo&& uinfo);
+
 private:
-  bool user_in(int32_t user_id);
   void user_out(int32_t user_id);
 
   boost::asio::io_service& _worker_service;
