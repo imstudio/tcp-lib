@@ -17,6 +17,7 @@ bool GameBizImpl::do_process(fnet::TcpMessagePtr msg) {
   }
   auto p_msg = get_gmsg_by_type(biz_data.msg_type);
   //bool success = p_msg->ParseFromArray(biz_data.pb_data(), biz_data.pb_size());
+
   OutMsgBuffer buf;
   buf.set_msg_type(biz_data.msg_type);
   buf.set_msg_extra(biz_data.room_id);
@@ -35,8 +36,8 @@ GameBizImpl::GMessagePtr GameBizImpl::get_gmsg_by_type(uint8_t t) {
   return GMessagePtr(new EnterRoomData());
 }
 
-bool GameBizImpl::enter_room(uint32_t uid, uint32_t room_id) {
-  PlayerInfo player;
+bool GameBizImpl::enter_room(uint32_t user_id, uint32_t room_id, std::size_t conn_id) {
+  PlayerInfo player(110, conn_id);
   if (!get_user_info(uid, player)) {
     FLOG(warning) << "user[" << uid << "] not exist.";
     return false;

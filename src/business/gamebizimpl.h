@@ -20,7 +20,7 @@ public:
 
 private:
   bool parse_packet(fnet::TcpMessage &msg);
-  bool enter_room(uint32_t uid, uint32_t room_id);
+  bool enter_room(uint32_t user_id, uint32_t room_id, std::size_t conn_id);
   bool get_room_conf(uint32_t room_id, NiuNiuGameConf& conf);
   bool get_user_info(uint32_t user_id, PlayerInfo& player);
 

@@ -20,21 +20,19 @@ enum class GameStatus: uint16_t{
 
 class IRoom{
 public:
-  IRoom(boost::asio::io_service& s);
+  IRoom(boost::asio::io_service& s, uint32_t room_id);
   virtual ~IRoom();
 
   virtual bool process(const BizData& biz_data, fnet::OutMsgBuffer& out);
-
-  virtual bool initialize();
-
+  virtual bool initialize(const BizData& data);
   virtual bool disconnect_event(int64_t conn_id);
-
   virtual bool tick();
-
   bool user_in(PlayerInfo&& uinfo);
 
 private:
   void user_out(int32_t user_id);
+  bool get_room_info(uint32_t room_id, RoomConf& conf);
+  bool get_user_info(uint32_t user_id, PlayerInfo& player);
 
   boost::asio::io_service& _worker_service;
   int32_t _room_id{0};
