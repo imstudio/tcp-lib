@@ -39,6 +39,7 @@ void protobuf_ShutdownFile_game_5fdata_2eproto();
 
 class CreateRoom;
 class EnterRoomData;
+class SimpleData;
 class SimpleResult;
 
 // ===================================================================
@@ -358,44 +359,21 @@ class EnterRoomData : public ::google::protobuf::Message /* @@protoc_insertion_p
 
   // accessors -------------------------------------------------------
 
-  // required int32 reqId = 1;
-  bool has_reqid() const;
-  void clear_reqid();
-  static const int kReqIdFieldNumber = 1;
-  ::google::protobuf::int32 reqid() const;
-  void set_reqid(::google::protobuf::int32 value);
-
-  // required int32 roomId = 2;
-  bool has_roomid() const;
-  void clear_roomid();
-  static const int kRoomIdFieldNumber = 2;
-  ::google::protobuf::int32 roomid() const;
-  void set_roomid(::google::protobuf::int32 value);
-
-  // required int32 userId = 3;
+  // required int32 userId = 2;
   bool has_userid() const;
   void clear_userid();
-  static const int kUserIdFieldNumber = 3;
+  static const int kUserIdFieldNumber = 2;
   ::google::protobuf::int32 userid() const;
   void set_userid(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:fgame.EnterRoomData)
  private:
-  inline void set_has_reqid();
-  inline void clear_has_reqid();
-  inline void set_has_roomid();
-  inline void clear_has_roomid();
   inline void set_has_userid();
   inline void clear_has_userid();
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
-  ::google::protobuf::int32 reqid_;
-  ::google::protobuf::int32 roomid_;
   ::google::protobuf::int32 userid_;
   friend void  protobuf_InitDefaults_game_5fdata_2eproto_impl();
   friend void  protobuf_AddDesc_game_5fdata_2eproto_impl();
@@ -405,6 +383,117 @@ class EnterRoomData : public ::google::protobuf::Message /* @@protoc_insertion_p
   void InitAsDefaultInstance();
 };
 extern ::google::protobuf::internal::ExplicitlyConstructed<EnterRoomData> EnterRoomData_default_instance_;
+
+// -------------------------------------------------------------------
+
+class SimpleData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:fgame.SimpleData) */ {
+ public:
+  SimpleData();
+  virtual ~SimpleData();
+
+  SimpleData(const SimpleData& from);
+
+  inline SimpleData& operator=(const SimpleData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SimpleData& default_instance();
+
+  static const SimpleData* internal_default_instance();
+
+  void Swap(SimpleData* other);
+
+  // implements Message ----------------------------------------------
+
+  inline SimpleData* New() const { return New(NULL); }
+
+  SimpleData* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SimpleData& from);
+  void MergeFrom(const SimpleData& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  size_t ByteSizeLong() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(SimpleData* other);
+  void UnsafeMergeFrom(const SimpleData& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 userId = 1;
+  bool has_userid() const;
+  void clear_userid();
+  static const int kUserIdFieldNumber = 1;
+  ::google::protobuf::int32 userid() const;
+  void set_userid(::google::protobuf::int32 value);
+
+  // required int32 dataType = 2;
+  bool has_datatype() const;
+  void clear_datatype();
+  static const int kDataTypeFieldNumber = 2;
+  ::google::protobuf::int32 datatype() const;
+  void set_datatype(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:fgame.SimpleData)
+ private:
+  inline void set_has_userid();
+  inline void clear_has_userid();
+  inline void set_has_datatype();
+  inline void clear_has_datatype();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::int32 userid_;
+  ::google::protobuf::int32 datatype_;
+  friend void  protobuf_InitDefaults_game_5fdata_2eproto_impl();
+  friend void  protobuf_AddDesc_game_5fdata_2eproto_impl();
+  friend void protobuf_AssignDesc_game_5fdata_2eproto();
+  friend void protobuf_ShutdownFile_game_5fdata_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<SimpleData> SimpleData_default_instance_;
 
 // ===================================================================
 
@@ -602,63 +691,15 @@ inline const SimpleResult* SimpleResult::internal_default_instance() {
 
 // EnterRoomData
 
-// required int32 reqId = 1;
-inline bool EnterRoomData::has_reqid() const {
+// required int32 userId = 2;
+inline bool EnterRoomData::has_userid() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void EnterRoomData::set_has_reqid() {
+inline void EnterRoomData::set_has_userid() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void EnterRoomData::clear_has_reqid() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void EnterRoomData::clear_reqid() {
-  reqid_ = 0;
-  clear_has_reqid();
-}
-inline ::google::protobuf::int32 EnterRoomData::reqid() const {
-  // @@protoc_insertion_point(field_get:fgame.EnterRoomData.reqId)
-  return reqid_;
-}
-inline void EnterRoomData::set_reqid(::google::protobuf::int32 value) {
-  set_has_reqid();
-  reqid_ = value;
-  // @@protoc_insertion_point(field_set:fgame.EnterRoomData.reqId)
-}
-
-// required int32 roomId = 2;
-inline bool EnterRoomData::has_roomid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void EnterRoomData::set_has_roomid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void EnterRoomData::clear_has_roomid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void EnterRoomData::clear_roomid() {
-  roomid_ = 0;
-  clear_has_roomid();
-}
-inline ::google::protobuf::int32 EnterRoomData::roomid() const {
-  // @@protoc_insertion_point(field_get:fgame.EnterRoomData.roomId)
-  return roomid_;
-}
-inline void EnterRoomData::set_roomid(::google::protobuf::int32 value) {
-  set_has_roomid();
-  roomid_ = value;
-  // @@protoc_insertion_point(field_set:fgame.EnterRoomData.roomId)
-}
-
-// required int32 userId = 3;
-inline bool EnterRoomData::has_userid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void EnterRoomData::set_has_userid() {
-  _has_bits_[0] |= 0x00000004u;
-}
 inline void EnterRoomData::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void EnterRoomData::clear_userid() {
   userid_ = 0;
@@ -677,7 +718,64 @@ inline void EnterRoomData::set_userid(::google::protobuf::int32 value) {
 inline const EnterRoomData* EnterRoomData::internal_default_instance() {
   return &EnterRoomData_default_instance_.get();
 }
+// -------------------------------------------------------------------
+
+// SimpleData
+
+// required int32 userId = 1;
+inline bool SimpleData::has_userid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SimpleData::set_has_userid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SimpleData::clear_has_userid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SimpleData::clear_userid() {
+  userid_ = 0;
+  clear_has_userid();
+}
+inline ::google::protobuf::int32 SimpleData::userid() const {
+  // @@protoc_insertion_point(field_get:fgame.SimpleData.userId)
+  return userid_;
+}
+inline void SimpleData::set_userid(::google::protobuf::int32 value) {
+  set_has_userid();
+  userid_ = value;
+  // @@protoc_insertion_point(field_set:fgame.SimpleData.userId)
+}
+
+// required int32 dataType = 2;
+inline bool SimpleData::has_datatype() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SimpleData::set_has_datatype() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SimpleData::clear_has_datatype() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SimpleData::clear_datatype() {
+  datatype_ = 0;
+  clear_has_datatype();
+}
+inline ::google::protobuf::int32 SimpleData::datatype() const {
+  // @@protoc_insertion_point(field_get:fgame.SimpleData.dataType)
+  return datatype_;
+}
+inline void SimpleData::set_datatype(::google::protobuf::int32 value) {
+  set_has_datatype();
+  datatype_ = value;
+  // @@protoc_insertion_point(field_set:fgame.SimpleData.dataType)
+}
+
+inline const SimpleData* SimpleData::internal_default_instance() {
+  return &SimpleData_default_instance_.get();
+}
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

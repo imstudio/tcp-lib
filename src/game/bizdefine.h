@@ -3,6 +3,11 @@
 
 #include <vector>
 
+#define t_user uint32_t
+#define t_room uint32_t
+#define t_conn std::size_t
+#define t_slot uint8_t
+
 namespace fgame{
   enum MessageType {
     PB_HeartBeat = 0,

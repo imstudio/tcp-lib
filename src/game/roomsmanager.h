@@ -2,7 +2,7 @@
 #define ROOMSMANAGER_H
 
 #include <map>
-#include "iroom.h"
+#include "room.h"
 #include "network/ibizsuit.h"
 
 BEGIN_NAMESPACE(fgame)
@@ -19,7 +19,7 @@ public:
   virtual void tick();
 
 private:
-  std::map<int32_t, IRoomPtr> _rooms;
+  std::map<int32_t, RoomPtr> _rooms;
 };
 
 END_NAMESPACE
